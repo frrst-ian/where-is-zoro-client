@@ -1,2 +1,3 @@
-# where-is-zoro-client
-FInd One Piece characters , Where's Waldo Style!
+# Where's Zoro
+
+- This is an ongoing project. Follow me for more updates!
