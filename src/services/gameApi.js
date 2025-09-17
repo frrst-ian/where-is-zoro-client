@@ -33,7 +33,11 @@ async function validateCharacterClick(clickData) {
     // POST to /game/validate-click
     // Send: { clickX, clickY, characterId }
     // Return: { success: boolean, character?: object }
-    const characterClick = await makeApiCall('game/validate-click' , 'POST' , clickData);
+    const characterClick = await makeApiCall(
+        "game/validate-click",
+        "POST",
+        clickData,
+    );
     return characterClick;
 }
 
@@ -65,7 +69,7 @@ async function makeApiCall(endpoint, method, data) {
     }
 }
 
-export default {
+export {
     createGameSession,
     getGameSession,
     completeGameSession,
