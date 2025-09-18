@@ -1,3 +1,5 @@
+import GameImage from "./GameImage";
+
 const GamePage = ({
   sessionId,
   gameStatus,
@@ -19,7 +21,7 @@ const GamePage = ({
       <div className="gamePage_info">
         <p>Session: {sessionId}</p>
         <p>Found characters: {foundCharacters.length}/2</p>
-        <div>Game image placeholder</div>
+        <GameImage onImageClick={onImageClick} />
       </div>
     </div>
   );
