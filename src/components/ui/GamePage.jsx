@@ -1,4 +1,5 @@
 import GameImage from "./GameImage";
+import TargetingBox from "./TargetingBox";
 
 const GamePage = ({
   sessionId,
@@ -6,6 +7,11 @@ const GamePage = ({
   foundCharacters,
   onImageClick,
   loading,
+  handleCharacterSelect,
+  showTargetingBox,
+  setShowTargetingBox,
+  targetingPosition,
+  message
 }) => {
   if (loading) {
     return <div>Loading game...</div>;
@@ -18,10 +24,19 @@ const GamePage = ({
   return (
     <div className="gamePage">
       <h1>Where's Zoro</h1>
+          {message && <div className="message">{message}</div>}
+
       <div className="gamePage_info">
         <p>Session: {sessionId}</p>
         <p>Found characters: {foundCharacters.length}/2</p>
         <GameImage onImageClick={onImageClick} />
+        {showTargetingBox && (
+          <TargetingBox
+            position={targetingPosition}
+            onCharacterSelect={handleCharacterSelect}
+            onCancel={() => setShowTargetingBox(false)}
+          />
+        )}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ const GameImage = ({ onImageClick }) => {
     return (
         <div className="gameImage">
             <img
-                src="/images/op.jpg"
+                src="/images/op.png"
                 alt="Where's Zoro Game"
                 onClick={handleClick}
                 className="gameImage_image"

@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { createGameSession } from "../../services/gameApi";
+import {
+  createGameSession,
+  validateCharacterClick,
+} from "../../services/gameApi";
 import GamePage from "../ui/GamePage";
 
 const GamePageContainer = () => {
@@ -8,6 +11,9 @@ const GamePageContainer = () => {
   const [foundCharacters, setFoundCharacters] = useState([]);
   const [gameStatus, setGameStatus] = useState("loading");
   const [loading, setLoading] = useState(false);
+  const [showTargetingBox, setShowTargetingBox] = useState(false);
+  const [targetingPosition, setTargetingPosition] = useState({ x: 0, y: 0 });
+  const [message, setMessage] = useState("");
 
   // Initialize game session on mount
   useEffect(() => {
@@ -30,6 +36,32 @@ const GamePageContainer = () => {
 
   const handleImageClick = async (clickData) => {
     console.log("Clicked at: ", clickData.x, clickData.y);
+    setShowTargetingBox(true);
+    setTargetingPosition({ x: clickData.x, y: clickData.y });
+  };
+
+  const handleCharacterSelect = async (character) => {
+    const result = await validateCharacterClick({
+      clickX: targetingPosition.x,
+      clickY: targetingPosition.y,
+      characterId: character.id,
+    });
+
+    console.log("API result:", result);
+
+    try {
+      if (result.success) {
+        setFoundCharacters([...foundCharacters, result.character]);
+        setMessage(`Found ${result.character.name}!`);
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        setMessage("Try again!");
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (error) {
+      console.error("Validation failed: ", error);
+    }
+    setShowTargetingBox(false);
   };
 
   return (
@@ -39,6 +71,12 @@ const GamePageContainer = () => {
       foundCharacters={foundCharacters}
       onImageClick={handleImageClick}
       loading={loading}
+      handleCharacterSelect={handleCharacterSelect}
+      showTargetingBox={showTargetingBox}
+      setShowTargetingBox={setShowTargetingBox}
+      targetingPosition={targetingPosition}
+      setTargetingPosition={setTargetingPosition}
+      message={message}
     />
   );
 };
