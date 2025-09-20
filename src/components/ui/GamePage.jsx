@@ -19,8 +19,6 @@ const GamePage = ({
     return <div>Loading game...</div>;
   }
 
-  console.log("Timer props:", { sessionStartTime, gameStatus, isActive: gameStatus === "playing" });
-
   if (gameStatus === "error") {
     return <div>Error loading game. Please try again.</div>;
   }

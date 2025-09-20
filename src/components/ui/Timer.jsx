@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 const Timer = ({ startTime, isActive }) => {
     const [elapsedSeconds, setElapsedSeconds] = useState(0);
-    console.log("Timer received:", { startTime, isActive });
     useEffect(() => {
         if (!isActive) return;
 
@@ -11,7 +10,7 @@ const Timer = ({ startTime, isActive }) => {
             const elapsed = Math.floor((now - new Date(startTime)) / 1000);
             setElapsedSeconds(elapsed);
         }, 1000);
-        return clearInterval(interval);
+        return () => clearInterval(interval);
     }, [startTime, isActive]);
 
     const formatTime = (seconds) => {
