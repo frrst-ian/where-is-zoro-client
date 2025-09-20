@@ -1,5 +1,6 @@
 import GameImage from "./GameImage";
 import TargetingBox from "./TargetingBox";
+import Timer from "./Timer";
 
 const GamePage = ({
   sessionId,
@@ -11,11 +12,14 @@ const GamePage = ({
   showTargetingBox,
   setShowTargetingBox,
   targetingPosition,
-  message
+  message,
+  sessionStartTime
 }) => {
   if (loading) {
     return <div>Loading game...</div>;
   }
+
+  console.log("Timer props:", { sessionStartTime, gameStatus, isActive: gameStatus === "playing" });
 
   if (gameStatus === "error") {
     return <div>Error loading game. Please try again.</div>;
@@ -24,7 +28,11 @@ const GamePage = ({
   return (
     <div className="gamePage">
       <h1>Where's Zoro</h1>
-          {message && <div className="message">{message}</div>}
+       <Timer
+          startTime={sessionStartTime} 
+          isActive={gameStatus === "playing"} 
+        />
+      {message && <div className="message">{message}</div>}
 
       <div className="gamePage_info">
         <p>Session: {sessionId}</p>
@@ -37,6 +45,7 @@ const GamePage = ({
             onCancel={() => setShowTargetingBox(false)}
           />
         )}
+
       </div>
     </div>
   );

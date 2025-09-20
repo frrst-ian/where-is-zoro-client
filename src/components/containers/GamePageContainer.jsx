@@ -8,6 +8,7 @@ import GamePage from "../ui/GamePage";
 const GamePageContainer = () => {
   // State management
   const [sessionId, setSessionId] = useState(null);
+  const [startTime, setStartTime] = useState(null); 
   const [foundCharacters, setFoundCharacters] = useState([]);
   const [gameStatus, setGameStatus] = useState("loading");
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,7 @@ const GamePageContainer = () => {
         setLoading(true);
         const session = await createGameSession();
         setSessionId(session.sessionId);
+        setStartTime(session.startTime);
         setGameStatus("playing");
       } catch (error) {
         console.error("Failed to create session: ", error);
@@ -77,8 +79,11 @@ const GamePageContainer = () => {
       targetingPosition={targetingPosition}
       setTargetingPosition={setTargetingPosition}
       message={message}
+      sessionStartTime={startTime}
     />
   );
 };
+
+
 
 export default GamePageContainer;
