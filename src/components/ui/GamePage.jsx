@@ -1,6 +1,7 @@
 import GameImage from "./GameImage";
 import TargetingBox from "./TargetingBox";
 import Timer from "./Timer";
+import ProgressTracker from "./ProgressTracker";
 
 const GamePage = ({
   sessionId,
@@ -13,7 +14,7 @@ const GamePage = ({
   setShowTargetingBox,
   targetingPosition,
   message,
-  sessionStartTime
+  sessionStartTime,
 }) => {
   if (loading) {
     return <div>Loading game...</div>;
@@ -26,15 +27,11 @@ const GamePage = ({
   return (
     <div className="gamePage">
       <h1>Where's Zoro</h1>
-       <Timer
-          startTime={sessionStartTime} 
-          isActive={gameStatus === "playing"} 
-        />
+      <Timer startTime={sessionStartTime} isActive={gameStatus === "playing"} />
       {message && <div className="message">{message}</div>}
 
       <div className="gamePage_info">
-        <p>Session: {sessionId}</p>
-        <p>Found characters: {foundCharacters.length}/2</p>
+        <ProgressTracker foundCharacters={foundCharacters} />
         <GameImage onImageClick={onImageClick} />
         {showTargetingBox && (
           <TargetingBox
@@ -43,7 +40,6 @@ const GamePage = ({
             onCancel={() => setShowTargetingBox(false)}
           />
         )}
-
       </div>
     </div>
   );
