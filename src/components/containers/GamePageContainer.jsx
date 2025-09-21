@@ -3,6 +3,7 @@ import Marker from "../ui/Marker";
 import {
   createGameSession,
   validateCharacterClick,
+  completeGameSession
 } from "../../services/gameApi";
 import GamePage from "../ui/GamePage";
 
@@ -51,33 +52,37 @@ const GamePageContainer = () => {
       characterId: character.id,
     });
 
-    console.log("API result:", result);
+    if (result.success) {
+      // Add marker
+      const newMarker = {
+        x: targetingPosition.x,
+        y: targetingPosition.y,
+        name: result.character.name,
+      };
+      setMarkers([...markers, newMarker]);
 
-    try {
-      if (result.success) {
-        const newMarker = {
-          x: targetingPosition.x,
-          y: targetingPosition.y,
-          name: result.character.name,
-        };
-        setMarkers([...markers, newMarker]);
-        const newFoundCharacters = [...foundCharacters, result.character];
-        setFoundCharacters(newFoundCharacters);
+      // Update found characters
+      const newFoundCharacters = [...foundCharacters, result.character];
+      setFoundCharacters(newFoundCharacters);
+      setMessage(`Found ${result.character.name}!`);
 
-        setMessage(`Found ${result.character.name}!`);
-        if (newFoundCharacters.length >= 2) {
-          setGameStatus("completed");
+      // CHECK GAME COMPLETION
+      if (newFoundCharacters.length >= 2) {
+        setGameStatus("completed");
+        try {
+          await completeGameSession(sessionId);
+          setMessage("Game Complete! Well done!");
+        } catch (error) {
+          console.error("Failed to complete session:", error);
         }
-
-        setTimeout(() => setMessage(""), 3000);
       } else {
-        setMessage("Try again!");
-
         setTimeout(() => setMessage(""), 3000);
       }
-    } catch (error) {
-      console.error("Validation failed: ", error);
+    } else {
+      setMessage("Try again!");
+      setTimeout(() => setMessage(""), 3000);
     }
+
     setShowTargetingBox(false);
   };
 

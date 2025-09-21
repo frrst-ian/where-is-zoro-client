@@ -15,7 +15,7 @@ const GamePage = ({
   targetingPosition,
   message,
   sessionStartTime,
-  markers
+  markers,
 }) => {
   if (loading) {
     return <div>Loading game...</div>;
@@ -23,6 +23,16 @@ const GamePage = ({
 
   if (gameStatus === "error") {
     return <div>Error loading game. Please try again.</div>;
+  }
+
+  if (gameStatus === "completed") {
+    return (
+      <div className="completion-screen">
+        <h1>Congratulations!</h1>
+        <p>You found all characters!</p>
+        <Timer startTime={sessionStartTime} isActive={false} />
+      </div>
+    );
   }
 
   return (
@@ -33,9 +43,9 @@ const GamePage = ({
 
       <div className="gamePage_info">
         <ProgressTracker foundCharacters={foundCharacters} />
-        <div style={{position:'relative'}}>
+        <div style={{ position: "relative" }}>
           <GameImage onImageClick={onImageClick} />
-           {markers.map((marker, index) => (
+          {markers.map((marker, index) => (
             <Marker
               key={index}
               x={marker.x}
