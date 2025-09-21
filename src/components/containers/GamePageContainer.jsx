@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Marker from "../ui/Marker";
 import {
   createGameSession,
   validateCharacterClick,
@@ -15,6 +16,7 @@ const GamePageContainer = () => {
   const [showTargetingBox, setShowTargetingBox] = useState(false);
   const [targetingPosition, setTargetingPosition] = useState({ x: 0, y: 0 });
   const [message, setMessage] = useState("");
+  const [markers, setMarkers] = useState([]);
 
   // Initialize game session on mount
   useEffect(() => {
@@ -53,6 +55,12 @@ const GamePageContainer = () => {
 
     try {
       if (result.success) {
+        const newMarker = {
+          x: targetingPosition.x,
+          y: targetingPosition.y,
+          name: result.character.name,
+        };
+        setMarkers([...markers, newMarker]);
         const newFoundCharacters = [...foundCharacters, result.character];
         setFoundCharacters(newFoundCharacters);
 
@@ -87,6 +95,7 @@ const GamePageContainer = () => {
       setTargetingPosition={setTargetingPosition}
       message={message}
       sessionStartTime={startTime}
+      markers={markers}
     />
   );
 };

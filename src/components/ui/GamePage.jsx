@@ -2,9 +2,9 @@ import GameImage from "./GameImage";
 import TargetingBox from "./TargetingBox";
 import Timer from "./Timer";
 import ProgressTracker from "./ProgressTracker";
+import Marker from "./Marker";
 
 const GamePage = ({
-  sessionId,
   gameStatus,
   foundCharacters,
   onImageClick,
@@ -15,6 +15,7 @@ const GamePage = ({
   targetingPosition,
   message,
   sessionStartTime,
+  markers
 }) => {
   if (loading) {
     return <div>Loading game...</div>;
@@ -32,14 +33,24 @@ const GamePage = ({
 
       <div className="gamePage_info">
         <ProgressTracker foundCharacters={foundCharacters} />
-        <GameImage onImageClick={onImageClick} />
-        {showTargetingBox && (
-          <TargetingBox
-            position={targetingPosition}
-            onCharacterSelect={handleCharacterSelect}
-            onCancel={() => setShowTargetingBox(false)}
-          />
-        )}
+        <div style={{position:'relative'}}>
+          <GameImage onImageClick={onImageClick} />
+           {markers.map((marker, index) => (
+            <Marker
+              key={index}
+              x={marker.x}
+              y={marker.y}
+              characterName={marker.name}
+            />
+          ))}
+          {showTargetingBox && (
+            <TargetingBox
+              position={targetingPosition}
+              onCharacterSelect={handleCharacterSelect}
+              onCancel={() => setShowTargetingBox(false)}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
