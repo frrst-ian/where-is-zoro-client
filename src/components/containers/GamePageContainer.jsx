@@ -3,7 +3,7 @@ import Marker from "../ui/Marker";
 import {
   createGameSession,
   validateCharacterClick,
-  completeGameSession
+  completeGameSession,
 } from "../../services/gameApi";
 import GamePage from "../ui/GamePage";
 
@@ -11,6 +11,7 @@ const GamePageContainer = () => {
   // State management
   const [sessionId, setSessionId] = useState(null);
   const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const [foundCharacters, setFoundCharacters] = useState([]);
   const [gameStatus, setGameStatus] = useState("loading");
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,8 @@ const GamePageContainer = () => {
 
       // CHECK GAME COMPLETION
       if (newFoundCharacters.length >= 2) {
+        const completionTime = new Date(); // Capture completion time
+        setEndTime(completionTime);
         setGameStatus("completed");
         try {
           await completeGameSession(sessionId);
@@ -101,6 +104,7 @@ const GamePageContainer = () => {
       message={message}
       sessionStartTime={startTime}
       markers={markers}
+      endTime={endTime}
     />
   );
 };
