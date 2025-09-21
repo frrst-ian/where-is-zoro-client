@@ -8,7 +8,7 @@ import GamePage from "../ui/GamePage";
 const GamePageContainer = () => {
   // State management
   const [sessionId, setSessionId] = useState(null);
-  const [startTime, setStartTime] = useState(null); 
+  const [startTime, setStartTime] = useState(null);
   const [foundCharacters, setFoundCharacters] = useState([]);
   const [gameStatus, setGameStatus] = useState("loading");
   const [loading, setLoading] = useState(false);
@@ -53,11 +53,18 @@ const GamePageContainer = () => {
 
     try {
       if (result.success) {
-        setFoundCharacters([...foundCharacters, result.character]);
+        const newFoundCharacters = [...foundCharacters, result.character];
+        setFoundCharacters(newFoundCharacters);
+
         setMessage(`Found ${result.character.name}!`);
+        if (newFoundCharacters.length >= 2) {
+          setGameStatus("completed");
+        }
+
         setTimeout(() => setMessage(""), 3000);
       } else {
         setMessage("Try again!");
+
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
@@ -83,7 +90,5 @@ const GamePageContainer = () => {
     />
   );
 };
-
-
 
 export default GamePageContainer;
