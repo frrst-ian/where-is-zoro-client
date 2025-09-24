@@ -54,7 +54,19 @@ const GamePageContainer = () => {
     });
 
     if (result.success) {
-      // Add marker
+      // Check if character already found
+      const isAlreadyFound = foundCharacters.some(
+        (foundChar) => foundChar.id === result.character.id,
+      );
+
+      if (isAlreadyFound) {
+        setMessage(`${result.character.name} already found!`);
+        setTimeout(() => setMessage(""), 3000);
+        setShowTargetingBox(false);
+        return; // Exit early - don't add duplicate
+      }
+
+      // Add marker for new character
       const newMarker = {
         x: targetingPosition.x,
         y: targetingPosition.y,
@@ -62,14 +74,14 @@ const GamePageContainer = () => {
       };
       setMarkers([...markers, newMarker]);
 
-      // Update found characters
+      // Update found characters with new unique character
       const newFoundCharacters = [...foundCharacters, result.character];
       setFoundCharacters(newFoundCharacters);
       setMessage(`Found ${result.character.name}!`);
 
-      // CHECK GAME COMPLETION
+      // Check game completion with updated count
       if (newFoundCharacters.length >= 2) {
-        const completionTime = new Date(); // Capture completion time
+        const completionTime = new Date();
         setEndTime(completionTime);
         setGameStatus("completed");
         try {
