@@ -41,9 +41,9 @@ const GamePageContainer = () => {
   }, []);
 
   const handleImageClick = async (clickData) => {
-    console.log("Clicked at: ", clickData.x, clickData.y);
+    console.log("Clicked at: ", clickData.display);
     setShowTargetingBox(true);
-    setTargetingPosition({ x: clickData.x, y: clickData.y });
+    setTargetingPosition(clickData.display);
   };
 
   const handleCharacterSelect = async (character) => {

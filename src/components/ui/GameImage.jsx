@@ -3,8 +3,21 @@ const GameImage = ({ onImageClick }) => {
         const rect = event.target.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
+        const displayedWidth = event.target.clientWidth;
+        const displayedHeight = event.target.clientHeight;
 
-        onImageClick({ x, y });
+        // Define original image size (where coordinates were stored)
+        const ORIGINAL_WIDTH = 1200; // Replace with actual
+        const ORIGINAL_HEIGHT = 800; // Replace with actual
+
+        // Normalize to original scale
+        const normalizedX = (x / displayedWidth) * ORIGINAL_WIDTH;
+        const normalizedY = (y / displayedHeight) * ORIGINAL_HEIGHT;
+
+        onImageClick({
+            normalized: { x: normalizedX, y: normalizedY },
+            display: { x: x, y: y },
+        });
     };
 
     return (
