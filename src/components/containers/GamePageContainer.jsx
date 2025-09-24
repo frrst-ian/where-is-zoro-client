@@ -17,6 +17,7 @@ const GamePageContainer = () => {
   const [loading, setLoading] = useState(false);
   const [showTargetingBox, setShowTargetingBox] = useState(false);
   const [targetingPosition, setTargetingPosition] = useState({ x: 0, y: 0 });
+  const [normalizedPosition, setNormalizedPosition] = useState({ x: 0, y: 0 }); // Add this
   const [message, setMessage] = useState("");
   const [markers, setMarkers] = useState([]);
 
@@ -41,15 +42,24 @@ const GamePageContainer = () => {
   }, []);
 
   const handleImageClick = async (clickData) => {
-    console.log("Clicked at: ", clickData.display);
+    console.log("Clicked at display: ", clickData.display);
+    console.log("Normalized coordinates: ", clickData.normalized);
+    
     setShowTargetingBox(true);
-    setTargetingPosition(clickData.display);
+    setTargetingPosition(clickData.display); // For UI positioning
+    setNormalizedPosition(clickData.normalized); // For backend validation
   };
 
   const handleCharacterSelect = async (character) => {
+    console.log("Sending to backend:", {
+      clickX: normalizedPosition.x,
+      clickY: normalizedPosition.y,
+      characterId: character.id,
+    });
+
     const result = await validateCharacterClick({
-      clickX: targetingPosition.x,
-      clickY: targetingPosition.y,
+      clickX: normalizedPosition.x, // Use normalized coordinates
+      clickY: normalizedPosition.y, // Use normalized coordinates
       characterId: character.id,
     });
 
@@ -66,7 +76,7 @@ const GamePageContainer = () => {
         return; // Exit early - don't add duplicate
       }
 
-      // Add marker for new character
+      // Add marker for new character (use display coordinates for visual positioning)
       const newMarker = {
         x: targetingPosition.x,
         y: targetingPosition.y,

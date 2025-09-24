@@ -16,7 +16,7 @@ const GamePage = ({
   message,
   sessionStartTime,
   markers,
-  endTime
+  endTime,
 }) => {
   if (loading) {
     return <div>Loading game...</div>;
@@ -31,7 +31,11 @@ const GamePage = ({
       <div className="completion-screen">
         <h1>Congratulations!</h1>
         <p>You found all characters!</p>
-        <Timer startTime={sessionStartTime} isActive={false} endTime={endTime} />
+        <Timer
+          startTime={sessionStartTime}
+          isActive={false}
+          endTime={endTime}
+        />
       </div>
     );
   }
@@ -39,7 +43,11 @@ const GamePage = ({
   return (
     <div className="gamePage">
       <h1>Where's Zoro</h1>
-      <Timer startTime={sessionStartTime} isActive={gameStatus === "playing"} endTime={endTime} />
+      <Timer
+        startTime={sessionStartTime}
+        isActive={gameStatus === "playing"}
+        endTime={endTime}
+      />
       {message && <div className="message">{message}</div>}
 
       <div className="gamePage_info">
