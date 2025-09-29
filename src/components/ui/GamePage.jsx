@@ -3,6 +3,7 @@ import TargetingBox from "./TargetingBox";
 import Timer from "./Timer";
 import ProgressTracker from "./ProgressTracker";
 import Marker from "./Marker";
+import { useState } from "react";
 
 const GamePage = ({
   gameStatus,
@@ -18,6 +19,8 @@ const GamePage = ({
   markers,
   endTime,
 }) => {
+  const [imageRect, setImageRect] = useState(null);
+
   if (loading) {
     return <div>Loading game...</div>;
   }
@@ -51,15 +54,18 @@ const GamePage = ({
       {message && <div className="message">{message}</div>}
 
       <div className="gamePage_info">
-        <ProgressTracker foundCharacters={foundCharacters} />
         <div style={{ position: "relative" }}>
-          <GameImage onImageClick={onImageClick} />
+          <GameImage
+            onImageClick={onImageClick}
+            onImageLoad={(rect) => setImageRect(rect)}
+          />
           {markers.map((marker, index) => (
             <Marker
               key={index}
               x={marker.x}
               y={marker.y}
               characterName={marker.name}
+              imageRect={imageRect}
             />
           ))}
           {showTargetingBox && (
@@ -70,6 +76,7 @@ const GamePage = ({
             />
           )}
         </div>
+        <ProgressTracker foundCharacters={foundCharacters} />
       </div>
     </div>
   );

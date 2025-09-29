@@ -78,8 +78,8 @@ const GamePageContainer = () => {
 
       // Add marker for new character (use display coordinates for visual positioning)
       const newMarker = {
-        x: targetingPosition.x,
-        y: targetingPosition.y,
+        x: normalizedPosition.x,
+        y: normalizedPosition.y,
         name: result.character.name,
       };
       setMarkers([...markers, newMarker]);
