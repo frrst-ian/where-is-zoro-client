@@ -1,3 +1,4 @@
+import { getAuthHeaders } from '../utils/auth'
 // Base configuration
 const BASE_URL = "http://localhost:3000";
 
@@ -47,6 +48,7 @@ async function makeApiCall(endpoint, method, data) {
             method: method,
             headers: {
                 "Content-Type": "application/json",
+                ...getAuthHeaders()
             },
         };
 
@@ -74,6 +76,7 @@ async function auth(identifier, password) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            ...getAuthHeaders()
         },
         body: JSON.stringify({ identifier, password }),
     });
@@ -92,6 +95,7 @@ async function signup(email, username, password, confirmPassword) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            ...getAuthHeaders()
         },
         body: JSON.stringify({ email, username, password, confirmPassword }),
     });
