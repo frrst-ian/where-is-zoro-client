@@ -69,9 +69,47 @@ async function makeApiCall(endpoint, method, data) {
     }
 }
 
+async function auth(identifier, password) {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ identifier, password }),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        console.log("Backend error data:", errorData);
+        throw new Error(errorData.error || "Login failed");
+    }
+
+    return res.json();
+}
+
+async function signup(email, username, password, confirmPassword) {
+    const res = await fetch(`${BASE_URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, username, password, confirmPassword }),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        console.log("Backend error data:", errorData);
+        throw new Error(errorData.error || "Signup failed");
+    }
+
+    return res.json();
+}
+
 export {
     createGameSession,
     getGameSession,
     completeGameSession,
     validateCharacterClick,
+    signup,
+    auth,
 };
