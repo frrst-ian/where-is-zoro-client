@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/gameApi";
+import { UserContext } from "../../context/UserContext";
 import Auth from "../ui/Auth";
 
 const AuthContainer = () => {
+  const { login } = useContext(UserContext);
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -15,7 +17,7 @@ const AuthContainer = () => {
     setError("");
     auth(identifier, password)
       .then((data) => {
-        localStorage.setItem("token", data.token);
+        login(data.token);
         navigate("/game");
       })
       .catch((err) => {

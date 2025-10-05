@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup } from "../../services/gameApi";
+import { UserContext } from "../../context/UserContext";
 import Signup from "../ui/Signup";
 
 const SignupContainer = () => {
+  const { login } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,20 +17,20 @@ const SignupContainer = () => {
     e.preventDefault();
     setSubmitting(true);
     setError("");
-    if(password === confirmPassword) {
-    signup(email, username, password,confirmPassword)
-      .then((data) => {
-        localStorage.setItem("token", data.token);
-        navigate("/game");
-      })
-      .catch((err) => {
-        setError(err.message);
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    if (password === confirmPassword) {
+      signup(email, username, password, confirmPassword)
+        .then((data) => {
+          login(data.token);
+          navigate("/game");
+        })
+        .catch((err) => {
+          setError(err.message);
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
     } else {
-      setError("Password doesn't match")
+      setError("Password doesn't match");
       setSubmitting(false);
     }
   };
