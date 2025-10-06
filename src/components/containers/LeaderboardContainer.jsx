@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Leaderboard from "../ui/Leaderboard";
 import { getLeaderboard } from "../../services/gameApi";
 
-const LeaderboardContainer = ({ onClose }) => {
+const LeaderboardContainer = ({ onClose, onBack }) => {
     const [scores, setScores] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,14 @@ const LeaderboardContainer = ({ onClose }) => {
         fetchScores();
     }, []);
 
-    return <Leaderboard scores={scores} loading={loading} onClose={onClose} />;
+    return (
+        <Leaderboard
+            scores={scores}
+            loading={loading}
+            onClose={onClose}
+            onBack={onBack}
+        />
+    );
 };
 
 export default LeaderboardContainer;

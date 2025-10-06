@@ -6,6 +6,7 @@ import Marker from "./Marker";
 import ImageSelector from "./ImageSelector";
 import InfoModal from "./InfoModal";
 import { useState } from "react";
+import { Hourglass } from "lucide-react";
 
 const GamePage = ({
   gameStatus,
@@ -67,11 +68,19 @@ const GamePage = ({
 
   return (
     <div className="gamePage">
-      <Timer
-        startTime={sessionStartTime}
-        isActive={gameStatus === "playing"}
-        endTime={endTime}
-      />
+      <div
+        className={`timer-container ${
+          foundCharacters.length === 4 ? "stopped" : ""
+        }`}
+      >
+        <Hourglass size={32} className="hourglass" />
+        <Timer
+          startTime={sessionStartTime}
+          isActive={gameStatus === "playing"}
+          endTime={endTime}
+        />
+      </div>
+
       {message && (
         <div
           className={`message-box ${

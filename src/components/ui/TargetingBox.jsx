@@ -20,8 +20,8 @@ const TargetingBox = ({ position, onCharacterSelect, onCancel }) => {
     <div className="targetingBox" style={{ position: "absolute", left, top }}>
       <select onChange={(e) => onCharacterSelect({ id: e.target.value })}>
         <option value="">Choose character...</option>
-        <option value="1">Luffy</option>
-        <option value="2">Zoro</option>
+        <option value="1">Zoro</option>
+        <option value="2">Luffy</option>
         <option value="3">Sanji</option>
         <option value="4">Nami</option>
       </select>

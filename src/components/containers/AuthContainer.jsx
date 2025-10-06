@@ -30,8 +30,15 @@ const AuthContainer = () => {
   };
 
   const handleGuestLogin = () => {
+    let guestId = localStorage.getItem("guestId");
+
+    if (!guestId) {
+      guestId = `guest_${Date.now()}`;
+      localStorage.setItem("guestId", guestId);
+    }
+
     const guestUser = {
-      id: `guest_${Date.now()}`,
+      id: guestId,
       username: null,
       email: null,
       isGuest: true,

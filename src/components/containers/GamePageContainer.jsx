@@ -34,6 +34,7 @@ const GamePageContainer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [finalTime, setFinalTime] = useState(0);
   const [selectedImage, setSelectedImage] = useState(1);
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
   // Generate user-specific localStorage key
   const getStorageKey = useCallback(() => {
@@ -119,6 +120,7 @@ const GamePageContainer = () => {
     setShowVictory(false);
     setShowNameForm(false);
     setShowLeaderboard(false);
+    setScoreSubmitted(false);
 
     // Reset all state
     setSessionId(null);
@@ -149,6 +151,8 @@ const GamePageContainer = () => {
       console.log("Submitting score:", { sessionId, username });
       const result = await submitScore(sessionId, username);
       console.log("Score submitted:", result);
+      setMessage("");
+      setScoreSubmitted(true);
       setShowLeaderboard(true);
     } catch (error) {
       console.error("Submit error:", error.message);
@@ -166,6 +170,8 @@ const GamePageContainer = () => {
     try {
       await submitScore(sessionId, e.target.playerName.value);
       setShowNameForm(false);
+      setMessage("");
+      setScoreSubmitted(true);
       setShowLeaderboard(true);
     } catch (error) {
       setSubmitError(error.message);
@@ -190,74 +196,79 @@ const GamePageContainer = () => {
       characterId: character.id,
     });
 
-    const result = await validateCharacterClick({
-      clickX: normalizedPosition.x,
-      clickY: normalizedPosition.y,
-      characterId: character.id,
-    });
+    try {
+      const result = await validateCharacterClick({
+        clickX: normalizedPosition.x,
+        clickY: normalizedPosition.y,
+        characterId: character.id,
+      });
 
-    if (result.success) {
-      const isAlreadyFound = foundCharacters.some(
-        (foundChar) => foundChar.id === result.character.id,
-      );
-
-      if (isAlreadyFound) {
-        setMessage(`${result.character.name} already found!`);
-        setTimeout(() => setMessage(""), 3000);
-        setShowTargetingBox(false);
-        return;
-      }
-
-      const newMarker = {
-        x: normalizedPosition.x,
-        y: normalizedPosition.y,
-        name: result.character.name,
-      };
-      setMarkers([...markers, newMarker]);
-
-      const newFoundCharacters = [...foundCharacters, result.character];
-      setFoundCharacters(newFoundCharacters);
-      setMessage(`Found ${result.character.name}!`);
-
-      // Save to user-specific localStorage
-      const storageKey = getStorageKey();
-      if (storageKey) {
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({
-            sessionId,
-            startTime,
-            foundCharacters: newFoundCharacters,
-            markers: [...markers, newMarker],
-          }),
+      if (result.success) {
+        const isAlreadyFound = foundCharacters.some(
+          (foundChar) => foundChar.id === result.character.id,
         );
-      }
 
-      if (newFoundCharacters.length >= 4) {
-        const completionTime = new Date();
-        const timeInSeconds = Math.floor(
-          (completionTime - new Date(startTime)) / 1000,
-        );
-        setFinalTime(timeInSeconds);
-        setEndTime(completionTime);
-        setGameStatus("completed");
-        setShowVictory(true);
+        if (isAlreadyFound) {
+          setMessage(`${result.character.name} already found!`);
+          setTimeout(() => setMessage(""), 3000);
+          setShowTargetingBox(false);
+          return;
+        }
 
-        try {
-          await completeGameSession(sessionId);
-          const storageKey = getStorageKey();
-          if (storageKey) {
-            localStorage.removeItem(storageKey);
+        const newMarker = {
+          x: normalizedPosition.x,
+          y: normalizedPosition.y,
+          name: result.character.name,
+        };
+        setMarkers([...markers, newMarker]);
+
+        const newFoundCharacters = [...foundCharacters, result.character];
+        setFoundCharacters(newFoundCharacters);
+        setMessage(`Found ${result.character.name}!`);
+
+        const storageKey = getStorageKey();
+        if (storageKey) {
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              sessionId,
+              startTime,
+              foundCharacters: newFoundCharacters,
+              markers: [...markers, newMarker],
+            }),
+          );
+        }
+
+        if (newFoundCharacters.length >= 4) {
+          const completionTime = new Date();
+          const timeInSeconds = Math.floor(
+            (completionTime - new Date(startTime)) / 1000,
+          );
+          setFinalTime(timeInSeconds);
+          setEndTime(completionTime);
+          setGameStatus("completed");
+          setShowVictory(true);
+
+          try {
+            await completeGameSession(sessionId);
+            const storageKey = getStorageKey();
+            if (storageKey) {
+              localStorage.removeItem(storageKey);
+            }
+          } catch (error) {
+            console.error("Failed to complete session:", error);
           }
-        } catch (error) {
-          console.error("Failed to complete session:", error);
+        } else {
+          setTimeout(() => setMessage(""), 3000);
         }
       } else {
+        setMessage("Try again!");
         setTimeout(() => setMessage(""), 3000);
       }
-    } else {
-      setMessage("Try again!");
-      setTimeout(() => setMessage(""), 3000);
+    } catch (error) {
+      console.error("Network error:", error);
+      setMessage("Connection error. Please check your internet!");
+      setTimeout(() => setMessage(""), 5000);
     }
 
     setShowTargetingBox(false);
@@ -310,7 +321,20 @@ const GamePageContainer = () => {
       )}
 
       {showLeaderboard && (
-        <LeaderboardContainer onClose={() => setShowLeaderboard(false)} />
+        <LeaderboardContainer
+          onClose={() => {
+            setShowLeaderboard(false);
+            setMessage("");
+          }}
+          onBack={
+            scoreSubmitted
+              ? null
+              : () => {
+                  setShowLeaderboard(false);
+                  setShowVictory(true);
+                }
+          }
+        />
       )}
     </>
   );

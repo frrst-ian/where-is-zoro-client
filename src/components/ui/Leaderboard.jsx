@@ -1,7 +1,7 @@
-import { Trophy, Medal, Award, Clock, X } from "lucide-react";
+import { Trophy, Medal, Award, Clock, X, ArrowLeft } from "lucide-react";
 import "../../styles/Leaderboard.css";
 
-const Leaderboard = ({ scores, loading, onClose }) => {
+const Leaderboard = ({ scores, loading, onClose, onBack }) => {
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -43,6 +43,13 @@ const Leaderboard = ({ scores, loading, onClose }) => {
                             </div>
                         ))}
                     </div>
+                )}
+
+                {onBack && (
+                    <button className="btn --btn-tertiary top-mrgin" onClick={onBack}>
+                        <ArrowLeft size={20} />
+                        Back 
+                    </button>
                 )}
             </div>
         </div>
