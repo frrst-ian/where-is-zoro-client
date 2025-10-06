@@ -79,6 +79,10 @@ a {
   color: var(--text);
 }
 
+html, body , #root {
+  height: 100%;
+}
+
 :root {
   --text: #121214;
   --text2: #f8f9fa;

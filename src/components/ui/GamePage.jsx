@@ -59,7 +59,6 @@ const GamePage = ({
 
   return (
     <div className="gamePage">
-      <h1>Where's Zoro</h1>
       <Timer
         startTime={sessionStartTime}
         isActive={gameStatus === "playing"}
