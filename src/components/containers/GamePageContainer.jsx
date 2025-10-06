@@ -33,6 +33,7 @@ const GamePageContainer = () => {
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [finalTime, setFinalTime] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(1);
 
   // Generate user-specific localStorage key
   const getStorageKey = useCallback(() => {
@@ -79,7 +80,7 @@ const GamePageContainer = () => {
     const initializeGame = async () => {
       try {
         setLoading(true);
-        const session = await createGameSession();
+        const session = await createGameSession(selectedImage);
         setSessionId(session.sessionId);
         setStartTime(session.startTime);
 
@@ -106,7 +107,7 @@ const GamePageContainer = () => {
     };
 
     initializeGame();
-  }, [gameStarted, sessionId, getStorageKey]);
+  }, [gameStarted, sessionId, getStorageKey, selectedImage]);
 
   const handleRestart = () => {
     // Clear user-specific localStorage
@@ -232,7 +233,7 @@ const GamePageContainer = () => {
         );
       }
 
-      if (newFoundCharacters.length >= 2) {
+      if (newFoundCharacters.length >= 4) {
         const completionTime = new Date();
         const timeInSeconds = Math.floor(
           (completionTime - new Date(startTime)) / 1000,
@@ -282,6 +283,8 @@ const GamePageContainer = () => {
         gameStarted={gameStarted}
         onStartGame={() => setGameStarted(true)}
         onPlayAgain={handleRestart}
+        selectedImage={selectedImage}
+        setSelectedImage={setSelectedImage}
       />
 
       {showVictory && (

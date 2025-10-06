@@ -2,6 +2,8 @@ const ProgressTracker = ({ foundCharacters }) => {
     const allCharacters = [
         { id: 1, name: "Zoro" },
         { id: 2, name: "Luffy" },
+        { id: 3, name: "Sanji" },
+        { id: 4, name: "Nami" },
     ];
 
     const foundCount = foundCharacters.length;

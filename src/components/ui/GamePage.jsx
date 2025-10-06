@@ -23,15 +23,16 @@ const GamePage = ({
   gameStarted,
   onStartGame,
   onPlayAgain,
+  selectedImage,
+  setSelectedImage,
 }) => {
   const [imageRect, setImageRect] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(1);
 
   const images = [
-    { id: 1, name: "Anime Shelf", src: "/images/op.png", thumbnail: "/images/op-thumb.png" },
-    { id: 2, name: "Beach Scene", src: "/images/beach.png", thumbnail: "/images/beach-thumb.png" },
-    { id: 3, name: "City Crowd", src: "/images/city.png", thumbnail: "/images/city-thumb.png" },
+    { id: 1, name: "Anime Shelf", src: "/images/op.png" },
+    { id: 2, name: "Beach Scene", src: "/images/op.png" },
+    { id: 3, name: "City Crowd", src: "/images/op.png" },
   ];
 
   if (loading) {
@@ -45,20 +46,17 @@ const GamePage = ({
   if (!gameStarted) {
     return (
       <div className="play-btn-container">
-        <ImageSelector 
+        <ImageSelector
           images={images}
           selectedImage={selectedImage}
           onSelectImage={setSelectedImage}
         />
-        
+
         <button className="btn --btn-play" onClick={onStartGame}>
           Play
         </button>
-        
-        <button 
-          className="btn --btn-info" 
-          onClick={() => setShowInfo(true)}
-        >
+
+        <button className="btn --btn-info" onClick={() => setShowInfo(true)}>
           How to Play
         </button>
 
@@ -93,7 +91,7 @@ const GamePage = ({
           <GameImage
             onImageClick={onImageClick}
             onImageLoad={(rect) => setImageRect(rect)}
-            imageSrc={images.find(img => img.id === selectedImage)?.src}
+            imageSrc={images.find((img) => img.id === selectedImage)?.src}
           />
           {markers.map((marker, index) => (
             <Marker
@@ -114,7 +112,10 @@ const GamePage = ({
         </div>
         <div className="left">
           <ProgressTracker foundCharacters={foundCharacters} />
-          <button className="btn --btn-tertiary --btn-blue" onClick={onPlayAgain}>
+          <button
+            className="btn --btn-tertiary --btn-blue"
+            onClick={onPlayAgain}
+          >
             Restart
           </button>
         </div>

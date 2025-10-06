@@ -9,7 +9,7 @@ const ImageSelector = ({ images, selectedImage, onSelectImage }) => {
             className={`image-option ${selectedImage === image.id ? "selected" : ""}`}
             onClick={() => onSelectImage(image.id)}
           >
-            <img src={image.thumbnail} alt={image.name} />
+            <img src={image.src} alt={image.name} />
             <span className="image-name">{image.name}</span>
           </div>
         ))}

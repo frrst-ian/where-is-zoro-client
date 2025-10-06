@@ -3,10 +3,10 @@ import { getAuthHeaders } from "../utils/auth";
 const BASE_URL = "http://localhost:3000";
 
 // Session management functions
-async function createGameSession() {
+async function createGameSession(photoId = 1) {
     // POST to /sessions
     // Return: { sessionId, startTime }
-    const sessionData = await makeApiCall("sessions", "POST", null);
+    const sessionData = await makeApiCall("sessions", "POST", { photoId });
     return sessionData;
 }
 
