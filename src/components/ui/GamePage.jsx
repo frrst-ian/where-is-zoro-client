@@ -20,7 +20,7 @@ const GamePage = ({
   endTime,
   gameStarted,
   onStartGame,
-  onRestart
+  onPlayAgain,
 }) => {
   const [imageRect, setImageRect] = useState(null);
 
@@ -30,21 +30,6 @@ const GamePage = ({
 
   if (gameStatus === "error") {
     return <div className="error">Error loading game. Please try again.</div>;
-  }
-
-  if (gameStatus === "completed") {
-    return (
-      <div className="completion-screen">
-        <h1>Congratulations!</h1>
-        <p>You found all characters!</p>
-        <Timer
-          startTime={sessionStartTime}
-          isActive={false}
-          endTime={endTime}
-        />
-        <button className="btn --btn-play" onClick={onRestart}>Play Again</button>
-      </div>
-    );
   }
 
   if (!gameStarted) {
@@ -101,7 +86,12 @@ const GamePage = ({
             />
           )}
         </div>
-        <ProgressTracker foundCharacters={foundCharacters} />
+        <div className="left">
+          <ProgressTracker foundCharacters={foundCharacters} />
+          <button className="btn --btn-tertiary --btn-blue" onClick={onPlayAgain}>
+            Restart
+          </button>
+        </div>
       </div>
     </div>
   );

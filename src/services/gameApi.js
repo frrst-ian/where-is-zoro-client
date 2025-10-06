@@ -113,6 +113,37 @@ async function signup(email, username, password, confirmPassword) {
     return res.json();
 }
 
+async function submitScore(sessionId, playerName) {
+    const res = await fetch(`${BASE_URL}/leaderboard`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ sessionId, playerName }),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to submit score");
+    }
+
+    return res.json();
+}
+
+async function getLeaderboard(limit = 10) {
+    const res = await fetch(`${BASE_URL}/leaderboard?limit=${limit}`, {
+        headers: getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to fetch leaderboard");
+    }
+
+    return res.json();
+}
+
 export {
     createGameSession,
     getGameSession,
@@ -120,4 +151,6 @@ export {
     validateCharacterClick,
     signup,
     auth,
+    submitScore,
+    getLeaderboard,
 };

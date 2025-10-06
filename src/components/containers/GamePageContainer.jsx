@@ -1,13 +1,19 @@
-import { useState, useEffect } from "react";
-import Marker from "../ui/Marker";
+import { useState, useEffect, useContext, useCallback } from "react";
+import { UserContext } from "../../context/UserContext";
 import {
   createGameSession,
   validateCharacterClick,
   completeGameSession,
 } from "../../services/gameApi";
 import GamePage from "../ui/GamePage";
+import VictoryModal from "../ui/VictoryModal";
+import NameForm from "../ui/NameForm";
+import LeaderboardContainer from "./LeaderboardContainer";
+import { submitScore } from "../../services/gameApi";
 
 const GamePageContainer = () => {
+  const { user } = useContext(UserContext); // Get current user
+
   // State management
   const [sessionId, setSessionId] = useState(null);
   const [startTime, setStartTime] = useState(null);
@@ -21,38 +27,54 @@ const GamePageContainer = () => {
   const [message, setMessage] = useState("");
   const [markers, setMarkers] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
+  const [showVictory, setShowVictory] = useState(false);
+  const [showNameForm, setShowNameForm] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [finalTime, setFinalTime] = useState(0);
 
+  // Generate user-specific localStorage key
+  const getStorageKey = useCallback(() => {
+    return user ? `activeSession_${user.id}` : null;
+  }, [user]);
+
+  // Load saved session for current user
   useEffect(() => {
-    const savedSession = localStorage.getItem("activeSession");
+    if (!user) return; // Wait for user to be loaded
+
+    const storageKey = `activeSession_${user.id}`;
+    const savedSession = localStorage.getItem(storageKey);
+
     if (savedSession) {
-      const {
-        sessionId,
-        startTime,
-        foundCharacters: savedCharacters,
-        markers: savedMarkers,
-      } = JSON.parse(savedSession);
+      try {
+        const {
+          sessionId,
+          startTime,
+          foundCharacters: savedCharacters,
+          markers: savedMarkers,
+        } = JSON.parse(savedSession);
 
-      console.log("Restored startTime:", startTime);
-      console.log("Type:", typeof startTime);
-      console.log("Can parse as Date?", new Date(startTime));
-      console.log("Is valid date?", !isNaN(new Date(startTime)));
+        console.log("Restored session for user:", user.id);
+        console.log("Session ID:", sessionId);
+        console.log("Start time:", startTime);
 
-      setSessionId(sessionId);
-      setStartTime(startTime);
-      setFoundCharacters(savedCharacters || []);
-      setMarkers(savedMarkers || []);
-      setGameStarted(true);
-      setGameStatus("playing");
+        setSessionId(sessionId);
+        setStartTime(startTime);
+        setFoundCharacters(savedCharacters || []);
+        setMarkers(savedMarkers || []);
+        setGameStarted(true);
+        setGameStatus("playing");
+      } catch (error) {
+        console.error("Failed to restore session:", error);
+        localStorage.removeItem(storageKey);
+      }
     }
-  }, []);
+  }, [user]);
 
   // Initialize game session on mount
   useEffect(() => {
-    if (!gameStarted) return;
-
-    if (sessionId) {
-      return;
-    }
+    if (!gameStarted || sessionId) return;
 
     const initializeGame = async () => {
       try {
@@ -61,15 +83,18 @@ const GamePageContainer = () => {
         setSessionId(session.sessionId);
         setStartTime(session.startTime);
 
-        localStorage.setItem(
-          "activeSession",
-          JSON.stringify({
-            sessionId: session.sessionId,
-            startTime: session.startTime,
-            foundCharacters: [],
-            markers: [],
-          }),
-        );
+        const storageKey = getStorageKey();
+        if (storageKey) {
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              sessionId: session.sessionId,
+              startTime: session.startTime,
+              foundCharacters: [],
+              markers: [],
+            }),
+          );
+        }
 
         setGameStatus("playing");
       } catch (error) {
@@ -81,11 +106,18 @@ const GamePageContainer = () => {
     };
 
     initializeGame();
-  }, [gameStarted, sessionId]);
+  }, [gameStarted, sessionId, getStorageKey]);
 
   const handleRestart = () => {
-    // Clear localStorage
-    localStorage.removeItem("activeSession");
+    // Clear user-specific localStorage
+    const storageKey = getStorageKey();
+    if (storageKey) {
+      localStorage.removeItem(storageKey);
+    }
+
+    setShowVictory(false);
+    setShowNameForm(false);
+    setShowLeaderboard(false);
 
     // Reset all state
     setSessionId(null);
@@ -98,13 +130,56 @@ const GamePageContainer = () => {
     setMessage("");
   };
 
+  const handleSubmitScore = () => {
+    setShowVictory(false);
+
+    if (user) {
+      // Auto-submit for logged-in users
+      handleAutoSubmit(user.username);
+    } else {
+      // Show form for guests
+      setShowNameForm(true);
+    }
+  };
+
+  const handleAutoSubmit = async (username) => {
+    setSubmitting(true);
+    try {
+      console.log("Submitting score:", { sessionId, username });
+      const result = await submitScore(sessionId, username);
+      console.log("Score submitted:", result);
+      setShowLeaderboard(true);
+    } catch (error) {
+      console.error("Submit error:", error.message);
+      setSubmitError(error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleNameSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      await submitScore(sessionId, e.target.playerName.value);
+      setShowNameForm(false);
+      setShowLeaderboard(true);
+    } catch (error) {
+      setSubmitError(error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleImageClick = async (clickData) => {
     console.log("Clicked at display: ", clickData.display);
     console.log("Normalized coordinates: ", clickData.normalized);
 
     setShowTargetingBox(true);
-    setTargetingPosition(clickData.display); // For UI positioning
-    setNormalizedPosition(clickData.normalized); // For backend validation
+    setTargetingPosition(clickData.display);
+    setNormalizedPosition(clickData.normalized);
   };
 
   const handleCharacterSelect = async (character) => {
@@ -115,13 +190,12 @@ const GamePageContainer = () => {
     });
 
     const result = await validateCharacterClick({
-      clickX: normalizedPosition.x, // Use normalized coordinates
-      clickY: normalizedPosition.y, // Use normalized coordinates
+      clickX: normalizedPosition.x,
+      clickY: normalizedPosition.y,
       characterId: character.id,
     });
 
     if (result.success) {
-      // Check if character already found
       const isAlreadyFound = foundCharacters.some(
         (foundChar) => foundChar.id === result.character.id,
       );
@@ -130,10 +204,9 @@ const GamePageContainer = () => {
         setMessage(`${result.character.name} already found!`);
         setTimeout(() => setMessage(""), 3000);
         setShowTargetingBox(false);
-        return; // Exit early - don't add duplicate
+        return;
       }
 
-      // Add marker for new character (use display coordinates for visual positioning)
       const newMarker = {
         x: normalizedPosition.x,
         y: normalizedPosition.y,
@@ -141,29 +214,40 @@ const GamePageContainer = () => {
       };
       setMarkers([...markers, newMarker]);
 
-      // Update found characters with new unique character
       const newFoundCharacters = [...foundCharacters, result.character];
       setFoundCharacters(newFoundCharacters);
       setMessage(`Found ${result.character.name}!`);
-      localStorage.setItem(
-        "activeSession",
-        JSON.stringify({
-          sessionId,
-          startTime,
-          foundCharacters: newFoundCharacters,
-          markers: [...markers, newMarker],
-        }),
-      );
 
-      // Check game completion with updated count
+      // Save to user-specific localStorage
+      const storageKey = getStorageKey();
+      if (storageKey) {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({
+            sessionId,
+            startTime,
+            foundCharacters: newFoundCharacters,
+            markers: [...markers, newMarker],
+          }),
+        );
+      }
+
       if (newFoundCharacters.length >= 2) {
         const completionTime = new Date();
+        const timeInSeconds = Math.floor(
+          (completionTime - new Date(startTime)) / 1000,
+        );
+        setFinalTime(timeInSeconds);
         setEndTime(completionTime);
         setGameStatus("completed");
+        setShowVictory(true);
+
         try {
           await completeGameSession(sessionId);
-          localStorage.removeItem("activeSession");
-          setMessage("Game Complete! Well done!");
+          const storageKey = getStorageKey();
+          if (storageKey) {
+            localStorage.removeItem(storageKey);
+          }
         } catch (error) {
           console.error("Failed to complete session:", error);
         }
@@ -179,25 +263,53 @@ const GamePageContainer = () => {
   };
 
   return (
-    <GamePage
-      sessionId={sessionId}
-      gameStatus={gameStatus}
-      foundCharacters={foundCharacters}
-      onImageClick={handleImageClick}
-      loading={loading}
-      handleCharacterSelect={handleCharacterSelect}
-      showTargetingBox={showTargetingBox}
-      setShowTargetingBox={setShowTargetingBox}
-      targetingPosition={targetingPosition}
-      setTargetingPosition={setTargetingPosition}
-      message={message}
-      sessionStartTime={startTime}
-      markers={markers}
-      endTime={endTime}
-      gameStarted={gameStarted}
-      onStartGame={() => setGameStarted(true)}
-      onRestart={handleRestart}
-    />
+    <>
+      <GamePage
+        sessionId={sessionId}
+        gameStatus={gameStatus}
+        foundCharacters={foundCharacters}
+        onImageClick={handleImageClick}
+        loading={loading}
+        handleCharacterSelect={handleCharacterSelect}
+        showTargetingBox={showTargetingBox}
+        setShowTargetingBox={setShowTargetingBox}
+        targetingPosition={targetingPosition}
+        setTargetingPosition={setTargetingPosition}
+        message={message}
+        sessionStartTime={startTime}
+        markers={markers}
+        endTime={endTime}
+        gameStarted={gameStarted}
+        onStartGame={() => setGameStarted(true)}
+        onPlayAgain={handleRestart}
+      />
+
+      {showVictory && (
+        <VictoryModal
+          time={finalTime}
+          onSubmitScore={handleSubmitScore}
+          onPlayAgain={handleRestart}
+          onViewLeaderboard={() => {
+            setShowVictory(false);
+            setShowLeaderboard(true);
+          }}
+        />
+      )}
+
+      {showNameForm && (
+        <NameForm
+          time={finalTime}
+          onSubmit={handleNameSubmit}
+          onCancel={() => setShowNameForm(false)}
+          submitting={submitting}
+          error={submitError}
+        />
+      )}
+
+      {showLeaderboard && (
+        <LeaderboardContainer onClose={() => setShowLeaderboard(false)} />
+      )}
+    </>
   );
 };
 

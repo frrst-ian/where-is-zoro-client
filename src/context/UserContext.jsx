@@ -10,14 +10,15 @@ const UserProvider = ({ children }) => {
     // Check localStorage on mount
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
+        const storedUser = localStorage.getItem("user");
         if (storedToken) {
             try {
-                const payload = JSON.parse(atob(storedToken.split(".")[1]));
-                setUser({ id: payload.userId, email: payload.email });
+                setUser(JSON.parse(storedUser));
                 setToken(storedToken);
             } catch (error) {
                 console.error("Invalid token:", error);
                 localStorage.removeItem("token");
+                localStorage.removeItem("user");
             }
         }
         setLoading(false);
@@ -27,12 +28,18 @@ const UserProvider = ({ children }) => {
         setUser(userData);
         setToken(tokenData);
         localStorage.setItem("token", tokenData);
+        localStorage.setItem("user", JSON.stringify(userData));
     };
 
     const logout = () => {
+        // Clear user-specific session on logout
+        if (user?.id) {
+            localStorage.removeItem(`activeSession_${user.id}`);
+        }
         setUser(null);
         setToken(null);
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
     };
 
     return (
