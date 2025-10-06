@@ -9,9 +9,9 @@ const Auth = ({
 }) => {
   return (
     <div className="login">
-      {error && <div> {error}</div>}
       <form className="login" onSubmit={onSubmit}>
         <h1 className="form-heading">Login to Where's Zoro</h1>
+        {error && <div className="message-box message-error"> {error}</div>}
 
         <input
           name="identifier"
@@ -33,8 +33,8 @@ const Auth = ({
           {submitting ? "Logging in..." : "Login"}
         </button>
 
-                <a className="btn" rel="noopener noreferrer" href="/signup">
-          Don't have an account? Signup 
+        <a className="btn" rel="noopener noreferrer" href="/signup">
+          Don't have an account? Signup
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="14"

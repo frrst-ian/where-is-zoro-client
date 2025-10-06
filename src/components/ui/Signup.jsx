@@ -13,8 +13,8 @@ const Signup = ({
 }) => {
   return (
     <div className="signup">
-      {error && <div> {error}</div>}
       <form className="signup" onSubmit={onSubmit}>
+        {error && <div className="message-box message-error"> {error}</div>}
         <h1 className="form-heading">Create your account</h1>
         <input
           name="email"
@@ -54,7 +54,7 @@ const Signup = ({
           type="submit"
           disabled={submitting}
         >
-          {submitting ? "Loading..." : "Signup"}
+          {submitting ? "Loading..." : "Sign up"}
         </button>
 
         <a className="btn" rel="noopener noreferrer" href="/login">
@@ -64,13 +64,13 @@ const Signup = ({
             width="14"
             fill="none"
             viewBox="0 0 16 16"
-            class="icon page_arrowRight__4KrB_"
+            className="icon page_arrowRight__4KrB_"
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
               d="M9.75 4.75 13.25 8m0 0-3.5 3.25M13.25 8H2.75"
             ></path>
           </svg>

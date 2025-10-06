@@ -18,6 +18,9 @@ const GamePage = ({
   sessionStartTime,
   markers,
   endTime,
+  gameStarted,
+  onStartGame,
+  onRestart
 }) => {
   const [imageRect, setImageRect] = useState(null);
 
@@ -39,6 +42,17 @@ const GamePage = ({
           isActive={false}
           endTime={endTime}
         />
+        <button className="btn --btn-play" onClick={onRestart}>Play Again</button>
+      </div>
+    );
+  }
+
+  if (!gameStarted) {
+    return (
+      <div className="play-btn">
+        <button className="btn --btn-play" onClick={onStartGame}>
+          Play
+        </button>
       </div>
     );
   }

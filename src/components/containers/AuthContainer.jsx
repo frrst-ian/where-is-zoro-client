@@ -21,7 +21,6 @@ const AuthContainer = () => {
         navigate("/game");
       })
       .catch((err) => {
-        console.log("Full error response:", err);
         setError(err.message);
       })
       .finally(() => {

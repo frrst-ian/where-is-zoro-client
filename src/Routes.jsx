@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Game from "./components/containers/GamePageContainer";
 import Auth from "./components/containers/AuthContainer";
 import Signup from "./components/containers/SignupContainer";
@@ -16,6 +16,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Auth />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="*" element={<NotFound />} />
