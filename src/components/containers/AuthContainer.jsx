@@ -17,7 +17,7 @@ const AuthContainer = () => {
     setError("");
     auth(identifier, password)
       .then((data) => {
-        login(data.token);
+        login(data.token,data.user);
         navigate("/game");
       })
       .catch((err) => {

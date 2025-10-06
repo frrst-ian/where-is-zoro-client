@@ -74,10 +74,22 @@ h6 {
   isolation: isolate;
 }
 
+a {
+  text-decoration: none;
+  color: var(--text);
+}
+
 :root {
-  --text: #f8f9fa;
-  --background: #121214;
+  --text: #121214;
+  --text2: #f8f9fa;
+  --background: #f8f9fa;
   --primary: #d0566b;
   --secondary: #297de5;
   --accent: #9e2bc9;
+  --spacing-1: 0.5rem;
+  --spacing-2: 0.875rem;
+  --rounding-normal: 0.438rem;
+  --p1: 0.875rem;
+  --error: #D20D10;
+  --success:lightseagreen;
 }

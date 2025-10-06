@@ -11,13 +11,12 @@ const Marker = ({ x, y, characterName, imageRect }) => {
         position: "absolute",
         left: displayX - 20,
         top: displayY - 10,
-        background: "green",
-        color: "white",
+        background: "#9e2bc9",
+        color: "#f8f9fa",
         padding: "4px 8px",
         borderRadius: "4px",
-        fontSize: "12px",
+        fontSize: "0.75rem",
         pointerEvents: "none",
-        border: "2px solid white",
         boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
       }}
     >

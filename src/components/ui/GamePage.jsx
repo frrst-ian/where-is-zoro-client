@@ -22,11 +22,11 @@ const GamePage = ({
   const [imageRect, setImageRect] = useState(null);
 
   if (loading) {
-    return <div>Loading game...</div>;
+    return <div className="loading">Loading game...</div>;
   }
 
   if (gameStatus === "error") {
-    return <div>Error loading game. Please try again.</div>;
+    return <div className="error">Error loading game. Please try again.</div>;
   }
 
   if (gameStatus === "completed") {
@@ -51,7 +51,19 @@ const GamePage = ({
         isActive={gameStatus === "playing"}
         endTime={endTime}
       />
-      {message && <div className="message">{message}</div>}
+      {message && (
+        <div
+          className={`message-box ${
+            message.includes("Found")
+              ? "message-success"
+              : message.includes("Try again")
+                ? "message-error"
+                : ""
+          }`}
+        >
+          {message}
+        </div>
+      )}
 
       <div className="gamePage_info">
         <div style={{ position: "relative" }}>

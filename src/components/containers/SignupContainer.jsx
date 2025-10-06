@@ -20,7 +20,7 @@ const SignupContainer = () => {
     if (password === confirmPassword) {
       signup(email, username, password, confirmPassword)
         .then((data) => {
-          login(data.token);
+          login(data.token,data.user);
           navigate("/game");
         })
         .catch((err) => {
