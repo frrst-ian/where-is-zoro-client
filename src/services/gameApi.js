@@ -1,4 +1,4 @@
-import { getAuthHeaders } from '../utils/auth'
+import { getAuthHeaders } from "../utils/auth";
 // Base configuration
 const BASE_URL = "http://localhost:3000";
 
@@ -48,7 +48,7 @@ async function makeApiCall(endpoint, method, data) {
             method: method,
             headers: {
                 "Content-Type": "application/json",
-                ...getAuthHeaders()
+                ...getAuthHeaders(),
             },
         };
 
@@ -76,7 +76,7 @@ async function auth(identifier, password) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            ...getAuthHeaders()
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ identifier, password }),
     });
@@ -95,15 +95,19 @@ async function signup(email, username, password, confirmPassword) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            ...getAuthHeaders()
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ email, username, password, confirmPassword }),
     });
 
     if (!res.ok) {
         const errorData = await res.json();
-        console.log("Backend error data:", errorData);
-        throw new Error(errorData.error || "Signup failed");
+        const error = new Error(errorData.error || "Signup failed");
+        if (errorData.details) {
+            error.details = errorData.details;
+        }
+
+        throw error;
     }
 
     return res.json();

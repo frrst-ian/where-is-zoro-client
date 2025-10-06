@@ -360,9 +360,7 @@ a.btn:hover {
 /* Error Banner */
 .login > div:first-child,
 .signup > div:first-child {
-  color: var(--primary);
   padding: 0.5rem;
-  background: rgba(208, 86, 107, 0.15);
   border-radius: 0.25rem;
   margin-bottom: 1rem;
   text-align: center;

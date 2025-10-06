@@ -6,7 +6,6 @@ import {
   completeGameSession,
 } from "../../services/gameApi";
 import GamePage from "../ui/GamePage";
-import { useNavigate } from "react-router-dom";
 
 const GamePageContainer = () => {
   // State management

@@ -20,11 +20,17 @@ const SignupContainer = () => {
     if (password === confirmPassword) {
       signup(email, username, password, confirmPassword)
         .then((data) => {
-          login(data.token,data.user);
+          login(data.token, data.user);
           navigate("/game");
         })
         .catch((err) => {
-          setError(err.message);
+          if (err.details && Array.isArray(err.details)) {
+            // Join array into single string with line breaks
+            setError(err.details.join("\n"));
+          } else {
+            // Single error message (Prisma duplicate or other)
+            setError(err.message);
+          }
         })
         .finally(() => {
           setSubmitting(false);
