@@ -1,6 +1,10 @@
 import { useState, useRef } from "react";
 
-const GameImage = ({ onImageClick, onImageLoad }) => {
+const GameImage = ({
+    onImageClick,
+    onImageLoad,
+    imageSrc = "/images/op.png",
+}) => {
     const [imageInfo, setImageInfo] = useState(null);
     const imgRef = useRef(null);
 
@@ -98,7 +102,7 @@ const GameImage = ({ onImageClick, onImageLoad }) => {
             )}
             <img
                 ref={imgRef}
-                src="/images/op.png"
+                src={imageSrc}
                 alt="Where's Zoro Game"
                 onLoad={handleImageLoad}
                 onClick={handleClick}

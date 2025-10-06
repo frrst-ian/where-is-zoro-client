@@ -169,7 +169,7 @@
   padding: 1rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.5);
-  background: rgba(255, 255, 255, 0.50);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(4px);
   min-width: 200px;
   z-index: 10;
@@ -305,12 +305,16 @@ a.btn:hover {
 }
 
 /*Start game page*/
-.play-btn {
-  height: 70vh;
+.play-btn-container {
+  min-height: 70vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 2rem;
+  padding: 2rem;
 }
+
 .btn.--btn-play {
   padding: 1rem 3rem;
   font-size: 1.15rem;
@@ -327,17 +331,94 @@ a.btn:hover {
     transform 0.2s ease;
 }
 
-/* Hover: subtle fill and lift */
 .btn.--btn-play:hover {
   background: var(--primary);
   color: #fff;
   transform: translateY(-3px);
 }
 
-/* Active (pressed) state */
 .btn.--btn-play:active {
   transform: translateY(0);
   opacity: 0.9;
+}
+
+.btn.--btn-info {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1px solid var(--accent);
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  width: 220px;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.btn.--btn-info:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* Image Selector */
+.image-selector {
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  animation: fadeInUp 0.4s ease;
+}
+
+.image-selector h3 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.image-option {
+  cursor: pointer;
+  border: 3px solid transparent;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.image-option:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent);
+}
+
+.image-option.selected {
+  border-color: var(--primary);
+  background: rgba(208, 86, 107, 0.1);
+  box-shadow: 0 4px 12px rgba(208, 86, 107, 0.3);
+}
+
+.image-option img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.image-name {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
 }
 
 /* Entry animation */
@@ -349,6 +430,18 @@ a.btn:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .image-option img {
+    height: 200px;
   }
 }
 
@@ -413,12 +506,12 @@ a.btn:hover {
 /*404 page*/
 
 .notfound {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .back {

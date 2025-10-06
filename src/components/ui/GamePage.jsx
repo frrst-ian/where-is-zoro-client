@@ -3,6 +3,8 @@ import TargetingBox from "./TargetingBox";
 import Timer from "./Timer";
 import ProgressTracker from "./ProgressTracker";
 import Marker from "./Marker";
+import ImageSelector from "./ImageSelector";
+import InfoModal from "./InfoModal";
 import { useState } from "react";
 
 const GamePage = ({
@@ -23,6 +25,14 @@ const GamePage = ({
   onPlayAgain,
 }) => {
   const [imageRect, setImageRect] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(1);
+
+  const images = [
+    { id: 1, name: "Anime Shelf", src: "/images/op.png", thumbnail: "/images/op-thumb.png" },
+    { id: 2, name: "Beach Scene", src: "/images/beach.png", thumbnail: "/images/beach-thumb.png" },
+    { id: 3, name: "City Crowd", src: "/images/city.png", thumbnail: "/images/city-thumb.png" },
+  ];
 
   if (loading) {
     return <div className="loading">Loading game...</div>;
@@ -34,10 +44,25 @@ const GamePage = ({
 
   if (!gameStarted) {
     return (
-      <div className="play-btn">
+      <div className="play-btn-container">
+        <ImageSelector 
+          images={images}
+          selectedImage={selectedImage}
+          onSelectImage={setSelectedImage}
+        />
+        
         <button className="btn --btn-play" onClick={onStartGame}>
           Play
         </button>
+        
+        <button 
+          className="btn --btn-info" 
+          onClick={() => setShowInfo(true)}
+        >
+          How to Play
+        </button>
+
+        {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
       </div>
     );
   }
@@ -68,6 +93,7 @@ const GamePage = ({
           <GameImage
             onImageClick={onImageClick}
             onImageLoad={(rect) => setImageRect(rect)}
+            imageSrc={images.find(img => img.id === selectedImage)?.src}
           />
           {markers.map((marker, index) => (
             <Marker
