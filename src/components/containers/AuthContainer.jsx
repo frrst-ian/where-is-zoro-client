@@ -11,13 +11,14 @@ const AuthContainer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError("");
     auth(identifier, password)
       .then((data) => {
-        login(data.token,data.user);
+        login(data.token, data.user);
         navigate("/game");
       })
       .catch((err) => {
@@ -28,18 +29,28 @@ const AuthContainer = () => {
       });
   };
 
+  const handleGuestLogin = () => {
+    const guestUser = {
+      id: `guest_${Date.now()}`,
+      username: null,
+      email: null,
+      isGuest: true,
+    };
+    login(null, guestUser);
+    navigate("/game");
+  };
+
   return (
-    <>
-      <Auth
-        error={error}
-        onSubmit={handleSubmit}
-        setIdentifier={setIdentifier}
-        identifier={identifier}
-        password={password}
-        setPassword={setPassword}
-        submitting={submitting}
-      />
-    </>
+    <Auth
+      error={error}
+      onSubmit={handleSubmit}
+      setIdentifier={setIdentifier}
+      identifier={identifier}
+      password={password}
+      setPassword={setPassword}
+      submitting={submitting}
+      onGuestLogin={handleGuestLogin}
+    />
   );
 };
 

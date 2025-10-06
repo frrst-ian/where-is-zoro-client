@@ -133,7 +133,7 @@ const GamePageContainer = () => {
   const handleSubmitScore = () => {
     setShowVictory(false);
 
-    if (user) {
+    if (user && !user.isGuest) {
       // Auto-submit for logged-in users
       handleAutoSubmit(user.username);
     } else {

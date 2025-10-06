@@ -6,6 +6,7 @@ const Auth = ({
   password,
   setPassword,
   submitting,
+  onGuestLogin
 }) => {
   return (
     <div className="login">
@@ -31,6 +32,16 @@ const Auth = ({
         />
         <button className="btn --btn-login" type="submit" disabled={submitting}>
           {submitting ? "Logging in..." : "Login"}
+        </button>
+
+
+        <button
+          type="button"
+          className="btn --btn-guest"
+          onClick={onGuestLogin}
+          disabled={submitting}
+        >
+          Continue as Guest
         </button>
 
         <a className="btn" rel="noopener noreferrer" href="/signup">
