@@ -79,8 +79,19 @@ a {
   color: var(--text);
 }
 
-html, body , #root {
+html,
+body,
+#root {
   height: 100%;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body::-webkit-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 :root {
@@ -95,5 +106,5 @@ html, body , #root {
   --rounding-normal: 0.438rem;
   --p1: 0.875rem;
   --error: #e65658;
-  --success:lightseagreen;
+  --success: #4cae4f;
 }

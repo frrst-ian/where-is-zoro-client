@@ -4,7 +4,6 @@ import Timer from "./Timer";
 import ProgressTracker from "./ProgressTracker";
 import Marker from "./Marker";
 import ImageSelector from "./ImageSelector";
-import InfoModal from "./InfoModal";
 import { useState } from "react";
 import { Hourglass } from "lucide-react";
 
@@ -28,12 +27,9 @@ const GamePage = ({
   setSelectedImage,
 }) => {
   const [imageRect, setImageRect] = useState(null);
-  const [showInfo, setShowInfo] = useState(false);
 
   const images = [
-    { id: 1, name: "Anime Shelf", src: "/images/op.png" },
-    { id: 2, name: "Beach Scene", src: "/images/op.png" },
-    { id: 3, name: "City Crowd", src: "/images/op.png" },
+    { id: 1, name: "Where's Wally x One Piece", src: "/images/one_peak.png" },
   ];
 
   if (loading) {
@@ -56,12 +52,6 @@ const GamePage = ({
         <button className="btn --btn-play" onClick={onStartGame}>
           Play
         </button>
-
-        <button className="btn --btn-info" onClick={() => setShowInfo(true)}>
-          How to Play
-        </button>
-
-        {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
       </div>
     );
   }
@@ -73,7 +63,7 @@ const GamePage = ({
           foundCharacters.length === 4 ? "stopped" : ""
         }`}
       >
-        <Hourglass size={32} className="hourglass" />
+        <Hourglass size={24} className="hourglass" />
         <Timer
           startTime={sessionStartTime}
           isActive={gameStatus === "playing"}

@@ -1,10 +1,6 @@
 import { useState, useRef } from "react";
 
-const GameImage = ({
-    onImageClick,
-    onImageLoad,
-    imageSrc = "/images/op.png",
-}) => {
+const GameImage = ({ onImageClick, onImageLoad, imageSrc }) => {
     const [imageInfo, setImageInfo] = useState(null);
     const imgRef = useRef(null);
 
@@ -20,21 +16,6 @@ const GameImage = ({
         };
         setImageInfo(info);
         onImageLoad?.(info);
-        console.log("=== IMAGE LOAD INFO ===");
-        console.log(
-            "Natural size (actual image):",
-            img.naturalWidth,
-            "x",
-            img.naturalHeight,
-        );
-        console.log(
-            "Client size (displayed):",
-            img.clientWidth,
-            "x",
-            img.clientHeight,
-        );
-        console.log("Offset size:", img.offsetWidth, "x", img.offsetHeight);
-        console.log("=====================");
     };
 
     const handleClick = (event) => {
@@ -44,35 +25,12 @@ const GameImage = ({
         const displayedWidth = rect.width;
         const displayedHeight = rect.height;
 
-        // Get actual natural dimensions from the loaded image
         const naturalWidth = event.target.naturalWidth;
         const naturalHeight = event.target.naturalHeight;
 
-        if (!naturalWidth || !naturalHeight) {
-            console.error("Image not fully loaded or dimensions unavailable");
-            return;
-        }
 
-        // Normalize to actual original scale
         const normalizedX = (x / displayedWidth) * naturalWidth;
         const normalizedY = (y / displayedHeight) * naturalHeight;
-
-        console.log("=== CLICK DEBUG ===");
-        console.log("Display click:", { x, y });
-        console.log("Image displayed size:", {
-            width: displayedWidth,
-            height: displayedHeight,
-        });
-        console.log("Image natural size:", {
-            width: naturalWidth,
-            height: naturalHeight,
-        });
-        console.log("Scale factors:", {
-            xScale: displayedWidth / naturalWidth,
-            yScale: displayedHeight / naturalHeight,
-        });
-        console.log("Normalized click:", { x: normalizedX, y: normalizedY });
-        console.log("=================");
 
         onImageClick({
             normalized: { x: normalizedX, y: normalizedY },
@@ -82,28 +40,10 @@ const GameImage = ({
 
     return (
         <div className="gameImage">
-            {imageInfo && (
-                <div
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        background: "rgba(0,0,0,0.7)",
-                        color: "white",
-                        padding: "5px",
-                        fontSize: "12px",
-                        zIndex: 1000,
-                    }}
-                >
-                    Natural: {imageInfo.naturalWidth}x{imageInfo.naturalHeight}{" "}
-                    | Display: {imageInfo.displayWidth}x
-                    {imageInfo.displayHeight}
-                </div>
-            )}
             <img
                 ref={imgRef}
                 src={imageSrc}
-                alt="Where's Zoro Game"
+                alt="Game Image"
                 onLoad={handleImageLoad}
                 onClick={handleClick}
                 className="gameImage_image"

@@ -25,10 +25,8 @@ const SignupContainer = () => {
         })
         .catch((err) => {
           if (err.details && Array.isArray(err.details)) {
-            // Join array into single string with line breaks
             setError(err.details.join("\n"));
           } else {
-            // Single error message (Prisma duplicate or other)
             setError(err.message);
           }
         })

@@ -6,12 +6,12 @@ const Auth = ({
   password,
   setPassword,
   submitting,
-  onGuestLogin
+  onGuestLogin,
 }) => {
   return (
     <div className="login">
       <form className="login" onSubmit={onSubmit}>
-        <h1 className="form-heading">Login to Where's Zoro</h1>
+        <h1 className="form-heading">Login</h1>
         {error && <div className="message-box message-error"> {error}</div>}
 
         <input
@@ -19,6 +19,7 @@ const Auth = ({
           type="text"
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
+          autoComplete="username"
           placeholder="Username or Email"
           required
         />
@@ -28,12 +29,12 @@ const Auth = ({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          autoComplete="current-password"
           required
         />
         <button className="btn --btn-login" type="submit" disabled={submitting}>
           {submitting ? "Logging in..." : "Login"}
         </button>
-
 
         <button
           type="button"
@@ -45,7 +46,7 @@ const Auth = ({
         </button>
 
         <a className="btn" rel="noopener noreferrer" href="/signup">
-          Don't have an account? Signup
+          Don't have an account? Sign up
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="14"

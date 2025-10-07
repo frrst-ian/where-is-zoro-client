@@ -1,7 +1,6 @@
 const ImageSelector = ({ images, selectedImage, onSelectImage }) => {
   return (
     <div className="image-selector">
-      <h3>Select an Image</h3>
       <div className="image-grid">
         {images.map((image) => (
           <div

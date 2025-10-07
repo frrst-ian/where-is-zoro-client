@@ -30,6 +30,7 @@ const Signup = ({
           type="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          autoComplete="username"
           placeholder="Username"
           required
         />
@@ -38,6 +39,7 @@ const Signup = ({
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
           placeholder="Password"
           required
         />
@@ -46,6 +48,7 @@ const Signup = ({
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          autoComplete="current-password"
           placeholder="Confirm Password"
           required
         />
